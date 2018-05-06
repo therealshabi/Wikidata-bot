@@ -2,6 +2,7 @@ from SPARQLWrapper import SPARQLWrapper, JSON
 import nltk
 from flask import Flask, request
 from flask_restful import Resource, Api
+from flask import jsonify
 
 # sentence = """Who is Yuvraj Singh?"""
 # tokens = nltk.word_tokenize(sentence)
@@ -42,13 +43,14 @@ api = Api(app)
 
 class Departments_Meta(Resource):
     def get(self):
-        return {'departments': "Shahbaz"}
+        return jsonify(departments =  "Shahbaz")
 
 
 class Departmental_Salary(Resource):
     def get(self, department_name):
-        result = {'data': department_name}
-        return result
+        print department_name
+        result = {'data' : department_name}
+        return jsonify(result)
         # We can have PUT,DELETE,POST here. But in our API GET implementation is sufficient
 
 

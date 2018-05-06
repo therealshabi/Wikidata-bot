@@ -32,7 +32,7 @@
     me.avatar = "https://thumbs.dreamstime.com/b/businessman-profile-icon-male-portrait-flat-design-vector-illustration-47075259.jpg";
 
     var you = {};
-    you.avatar = "https://a11.t26.net/taringa/avatares/9/1/2/F/7/8/Demon_King1/48x48_5C5.jpg";
+    you.avatar = "https://colineberhardt.github.io/cla-bot/bot.png";
 
     function formatAMPM(date) {
         var hours = date.getHours();
@@ -53,10 +53,10 @@
         var control = "";
         var date = formatAMPM(new Date());
 
-        if (who == "me") {
+        if (who == "you") {
             control = '<li style="width:100%">' +
                 '<div class="msj macro">' +
-                '<div class="avatar"><img class="img-circle" style="width:100%;" src="' + me.avatar + '" /></div>' +
+                '<div class="avatar"><img class="img-circle" style="width:100%;" src="' + you.avatar + '" /></div>' +
                 '<div class="text text-l">' +
                 '<p>' + text + '</p>' +
                 '<p><small>' + date + '</small></p>' +
@@ -70,7 +70,7 @@
                 '<p>' + text + '</p>' +
                 '<p><small>' + date + '</small></p>' +
                 '</div>' +
-                '<div class="avatar" style="padding:0px 0px 0px 10px !important"><img class="img-circle" style="width:100%;" src="' + you.avatar + '" /></div>' +
+                '<div class="avatar" style="padding:0px 0px 0px 10px !important"><img class="img-circle" style="width:100%;" src="' + me.avatar + '" /></div>' +
                 '</li>';
         }
         setTimeout(
@@ -83,12 +83,13 @@
     function resetChat() {
         $("ul").empty();
     }
-    
+
     $(".mytext").keydown(function(e) {
         if (e.which == 13) {
             var text = $(this).val();
             if (text !== "") {
                 insertChat("me", text);
+                UserAction(text);
                 $(this).val('');
             }
         }
@@ -106,13 +107,31 @@
     resetChat();
 
     //-- Print Messages
-    insertChat("me", "Hello Shahbaz...", 0);
+    insertChat("you", "Hey there...", 0);
     //    insertChat("you", "Hi, Pablo", 1500);
     //    insertChat("me", "What would you like to talk about today?", 3500);
     //    insertChat("you", "Tell me a joke", 7000);
     //    insertChat("me", "Spaceman: Computer! Computer! Do we bring battery?!", 9500);
     //    insertChat("you", "LOL", 12000);
     //    
+
+    function UserAction(text) {
+        var xhttp = new XMLHttpRequest();
+        xhttp.open("GET", "http://127.0.0.1:5000/dept/"+text, true);
+        xhttp.send();
+        xhttp.onload = function(e) {
+            if (xhttp.readyState === 4) {
+                var response = JSON.parse(xhttp.responseText);
+                insertChat("you", response["data"], 0);
+                console.log(response);
+            }
+        }
+        
+        xhttp.onerror = function(e) {
+            alert("Seems like bot is offline, try again later..");
+        }
+
+    }
 
 
     //-- NOTE: No use time on insertChat.
