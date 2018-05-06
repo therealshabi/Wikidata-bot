@@ -1,2 +1,1 @@
 # Dbpedia-Bot
-# Dbpedia-bot
