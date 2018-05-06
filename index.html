@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+</head>
+
+<body>
+    <div class="col-sm-3 col-sm-offset-4 frame">
+        <ul></ul>
+        <div>
+            <div class="msj-rta macro">
+                <div class="text text-r" style="background:whitesmoke !important">
+                    <input class="mytext" id="text" placeholder="Type a message" />
+                </div>
+
+            </div>
+            <div style="padding:10px;">
+                <span class="glyphicon glyphicon-share-alt"></span>
+            </div>
+        </div>
+    </div>
+</body>
+
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<link href="chat.css" rel="stylesheet">
+
+<script type="application/javascript">
+    var me = {};
+    me.avatar = "https://thumbs.dreamstime.com/b/businessman-profile-icon-male-portrait-flat-design-vector-illustration-47075259.jpg";
+
+    var you = {};
+    you.avatar = "https://a11.t26.net/taringa/avatares/9/1/2/F/7/8/Demon_King1/48x48_5C5.jpg";
+
+    function formatAMPM(date) {
+        var hours = date.getHours();
+        var minutes = date.getMinutes();
+        var ampm = hours >= 12 ? 'PM' : 'AM';
+        hours = hours % 12;
+        hours = hours ? hours : 12; // the hour '0' should be '12'
+        minutes = minutes < 10 ? '0' + minutes : minutes;
+        var strTime = hours + ':' + minutes + ' ' + ampm;
+        return strTime;
+    }
+
+    //-- No use time. It is a javaScript effect.
+    function insertChat(who, text, time) {
+        if (time === undefined) {
+            time = 0;
+        }
+        var control = "";
+        var date = formatAMPM(new Date());
+
+        if (who == "me") {
+            control = '<li style="width:100%">' +
+                '<div class="msj macro">' +
+                '<div class="avatar"><img class="img-circle" style="width:100%;" src="' + me.avatar + '" /></div>' +
+                '<div class="text text-l">' +
+                '<p>' + text + '</p>' +
+                '<p><small>' + date + '</small></p>' +
+                '</div>' +
+                '</div>' +
+                '</li>';
+        } else {
+            control = '<li style="width:100%;">' +
+                '<div class="msj-rta macro">' +
+                '<div class="text text-r">' +
+                '<p>' + text + '</p>' +
+                '<p><small>' + date + '</small></p>' +
+                '</div>' +
+                '<div class="avatar" style="padding:0px 0px 0px 10px !important"><img class="img-circle" style="width:100%;" src="' + you.avatar + '" /></div>' +
+                '</li>';
+        }
+        setTimeout(
+            function() {
+                $("ul").append(control).scrollTop($("ul").prop('scrollHeight'));
+            }, time);
+
+    }
+
+    function resetChat() {
+        $("ul").empty();
+    }
+    
+    $(".mytext").keydown(function(e) {
+        if (e.which == 13) {
+            var text = $(this).val();
+            if (text !== "") {
+                insertChat("me", text);
+                $(this).val('');
+            }
+        }
+    });
+
+    $('body > div > div > div:nth-child(2) > span').click(function() {
+        $(".mytext").trigger({
+            type: 'keydown',
+            which: 13,
+            keyCode: 13
+        });
+    })
+
+    //-- Clear Chat
+    resetChat();
+
+    //-- Print Messages
+    insertChat("me", "Hello Shahbaz...", 0);
+    //    insertChat("you", "Hi, Pablo", 1500);
+    //    insertChat("me", "What would you like to talk about today?", 3500);
+    //    insertChat("you", "Tell me a joke", 7000);
+    //    insertChat("me", "Spaceman: Computer! Computer! Do we bring battery?!", 9500);
+    //    insertChat("you", "LOL", 12000);
+    //    
+
+
+    //-- NOTE: No use time on insertChat.
+
+</script>
+
+
+</html>
