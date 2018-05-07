@@ -3,6 +3,10 @@ import nltk
 from flask import Flask, request
 from flask_restful import Resource, Api
 from flask import jsonify
+import json
+from vocabulary.vocabulary import Vocabulary as vb
+
+vb.synonym("wife")
 
 def parts_of_speech(corpus):
     "returns named entity chunks in a given text"
@@ -49,23 +53,36 @@ def find_entities(chunks):
 
 print find_entities(parts_of_speech("What is the height of Yuvraj Singh?"))
 
+properties = open('property.json','r')
+properties = json.load(properties)
+print(type(properties))
+for p, prop in properties.items():
+    if prop=="spouse":
+        print p
 
-sparql = SPARQLWrapper("http://dbpedia.org/sparql")
-sparql.setQuery("""
-    SELECT ?height
-    WHERE {
-    ?person rdf:type dbo:Person .
-    ?person rdfs:label 'Yuvraj Singh' .
-    ?person dbo:height ?height .
-     }
-""")
+str = "Yuvraj Singh"
+sparql = SPARQLWrapper("https://query.wikidata.org/sparql")
+query = """
+  SELECT ?name ?dob ?spouse WHERE {
+  ?person rdfs:label ?name .
+  ?person wdt:P569 ?dob .
+  ?person wdt:P106 ?occupation .
+  ?occupation wdt:P279* wd:Q12299841.
+  ?person wdt:P26 ?spouse_id .
+  ?spouse_id rdfs:label ?spouse .
+  FILTER(STR(?name) = '""" + str + """' && LANG(?spouse) = "en")
+}
+LIMIT 1
+"""
+print query
+sparql.setQuery(query)
 
 sparql.setReturnFormat(JSON)
 results = sparql.query().convert()
 print(results)
 
-for result in results["results"]["bindings"]:
-     print('%s: %s' % (result["author_name"]["value"], result["title"]["value"]))
+# for result in results["results"]["bindings"]:
+#      print('%s: %s' % (result["author_name"]["value"], result["title"]["value"]))
 
 
 app = Flask(__name__)
