@@ -50,6 +50,10 @@
 <link href="chat.css" rel="stylesheet">
 
 <script type="application/javascript">
+    $(function() {
+        $("#text").focus();
+    });
+
     var me = {};
     me.avatar = "https://thumbs.dreamstime.com/b/businessman-profile-icon-male-portrait-flat-design-vector-illustration-47075259.jpg";
 
@@ -126,12 +130,6 @@
 
     //-- Print Messages
     insertChat("you", "Hey there...", 0);
-    //    insertChat("you", "Hi, Pablo", 1500);
-    //    insertChat("me", "What would you like to talk about today?", 3500);
-    //    insertChat("you", "Tell me a joke", 7000);
-    //    insertChat("me", "Spaceman: Computer! Computer! Do we bring battery?!", 9500);
-    //    insertChat("you", "LOL", 12000);
-    //    
 
     function UserAction(text) {
         control = '<li id="loading" style="width:100%;">' +
@@ -141,25 +139,28 @@
         $("ul").append(control).scrollTop($("ul").prop('scrollHeight'));
 
         var xhttp = new XMLHttpRequest();
-        xhttp.open("GET", "http://127.0.0.1:5000/dept/" + text, true);
+        xhttp.open("GET", "http://127.0.0.1:5000/wiki/" + text, true);
         xhttp.send();
         xhttp.onload = function(e) {
             if (xhttp.readyState === 4) {
-                var response = JSON.parse(xhttp.responseText);
+                var response = JSON.parse(JSON.parse(xhttp.responseText));
+                console.log(typeof(response));
                 $("ul").children("#loading").remove();
-                insertChat("you", response["data"], 0);
+                if (response["data"] != "") {
+                    insertChat("you", response["data"], 0);
+                } else {
+                    alert("Bot doesn't seem to understand your query, sorry for inconvenience :(");
+                }
                 console.log(response);
             }
         }
 
         xhttp.onerror = function(e) {
-            alert("Seems like bot is offline, try again later..");
+            $("ul").children("#loading").remove();
+            console.log("Error : " + e);
+            alert("Some unknown error occured, try again later..");
         }
-
     }
-
-
-    //-- NOTE: No use time on insertChat.
 
 </script>
 
