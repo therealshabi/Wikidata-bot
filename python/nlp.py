@@ -1,15 +1,15 @@
 import nltk
 
-query_properties = []
 
-def parts_of_speech(corpus):
-    "returns named entity chunks in a given text"
+def parts_of_speech(corpus, query_properties):
     sentences = nltk.sent_tokenize(corpus)
     tokenized = [nltk.word_tokenize(sentence) for sentence in sentences]
     pos_tags = [nltk.pos_tag(sentence) for sentence in tokenized]
     print(pos_tags[0])
     for name, tag in pos_tags[0]:
         if tag == 'NN':
+            name = name.split("-")
+            name = " ".join(name)
             query_properties.append(name)
     print(query_properties)
     chunked_sents = nltk.ne_chunk_sents(pos_tags, binary=True)
@@ -17,7 +17,8 @@ def parts_of_speech(corpus):
 
 
 def find_entities(corpus):
-    chunks = parts_of_speech(corpus)
+    query_properties = []
+    chunks = parts_of_speech(corpus, query_properties)
 
     def traverse(tree):
 
@@ -41,4 +42,4 @@ def find_entities(corpus):
         for e in entities:
             if e not in named_entities:
                 named_entities.append(e)
-    return named_entities
+    return named_entities, query_properties
