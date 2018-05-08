@@ -1,1 +1,1 @@
-# Dbpedia-Bot
+# Wikidata-Bot
