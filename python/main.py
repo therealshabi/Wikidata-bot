@@ -1,40 +1,82 @@
 from SPARQLWrapper import SPARQLWrapper, JSON
-import nltk
+import json
+from vocabulary.vocabulary import Vocabulary as vb
+from nlp import find_entities
 from flask import Flask, request
 from flask_restful import Resource, Api
-
-# sentence = """Who is Yuvraj Singh?"""
-# tokens = nltk.word_tokenize(sentence)
-# print(tokens)
-# tagged = nltk.pos_tag(tokens)
-# entities = list(nltk.chunk.ne_chunk(tagged))
-# ans = str(entities[2])
-# ans = ans.split(" ")
-# print(ans)
-
-# sparql = SPARQLWrapper("http://dbpedia.org/sparql")
-# sparql.setQuery("""
-#     SELECT ?author_name ?title
-#     WHERE {
-#     ?author rdf:type dbo:Writer .
-#     ?author rdfs:label ?author_name .
-#     ?author dbo:notableWork ?work .
-#     ?work rdfs:label ?title
-#      }
-#      LIMIT 10
-# """)
-#
-# sparql.setReturnFormat(JSON)
-# results = sparql.query().convert()
-#
-# for result in results["results"]["bindings"]:
-#      print('%s: %s' % (result["author_name"]["value"], result["title"]["value"]))
+from flask import jsonify
 
 
+def obtain_result(named_entity, query_properties):
+    property_code = []
+    properties = open('property.json', 'r')
+    properties = json.load(properties)
+    print(type(properties))
+    for noun in query_properties:
+        noun_synonyms = vb.synonym(noun, format="dict")
+        for p, prop in properties.items():
+            if prop == noun:
+                property_code.append(p)
+                break
+            else:
+                if type(noun_synonyms) != bool:
+                    for synonym in noun_synonyms.itervalues():
+                        if prop == synonym:
+                            property_code.append(p)
+                            break
+    print(property_code)
 
+    if (len(named_entity) != 0):
+        if (len(property_code) != 0):
+            sparql = SPARQLWrapper("https://query.wikidata.org/sparql")
+            query = """SELECT ?label ?property WHERE
+                        { 
+                        ?entity rdfs:label ?label .
+                        ?entity wdt:""" + property_code[0] + """ ?property_id .
+                        ?property_id rdfs:label ?property .
+                        FILTER (STR(?label) = '""" + named_entity[0] + """') .
+                        FILTER (LANG(?property) = "en")
+                        }"""
+            print query
+        else:
+            sparql = SPARQLWrapper("https://dbpedia.org/sparql")
+            query = """SELECT ?label ?description WHERE
+                        { 
+                        ?entity rdfs:label ?label .
+                        ?entity dbo:abstract ?description .
+                        FILTER (STR(?label) = '""" + named_entity[0] + """') .
+                        }"""
+            print query
 
-# Create a engine for connecting to SQLite3.
-# Assuming salaries.db is in your app root folder
+        sparql.setQuery(query)
+        sparql.setReturnFormat(JSON)
+        result = []
+        try:
+            results = sparql.query().convert()
+            print(results)
+            for data in results["results"]["bindings"]:
+                result.append(data["property"]["value"])
+
+            result = list(set(result))
+            response = []
+            for i in result:
+                print(i)
+                response.append(str(i))
+            print(response)
+            data = {"status": "200", "data": response}
+            result = json.dumps(data)
+        except:
+            response = ["Unable to retrieve data"]
+            data = {"status": "500", "data": response}
+            result = json.dumps(data)
+    else:
+        response = ["Unable to retrieve data"]
+        data = {"status": "500", "data": response}
+        result = json.dumps(data)
+
+    print(result)
+    return result
+
 
 app = Flask(__name__)
 api = Api(app)
@@ -42,17 +84,19 @@ api = Api(app)
 
 class Departments_Meta(Resource):
     def get(self):
-        return {'departments': "Shahbaz"}
+        return jsonify(departments="Shahbaz")
 
 
-class Departmental_Salary(Resource):
-    def get(self, department_name):
-        result = {'data': department_name}
+class Query(Resource):
+    def get(self, query):
+        print query
+        named_entity, query_properties = find_entities(query)
+        result = obtain_result(named_entity, query_properties)
         return result
         # We can have PUT,DELETE,POST here. But in our API GET implementation is sufficient
 
 
-api.add_resource(Departmental_Salary, '/dept/<string:department_name>')
+api.add_resource(Query, '/wiki/<string:query>')
 api.add_resource(Departments_Meta, '/')
 
 if __name__ == '__main__':
