@@ -12,18 +12,23 @@ def obtain_result(named_entity, query_properties):
     properties = open('property.json', 'r')
     properties = json.load(properties)
     print(type(properties))
-    for noun in query_properties:
-        noun_synonyms = vb.synonym(noun, format="dict")
+
+    noun = query_properties[0]
+    noun_synonyms = vb.synonym(noun, format="dict")
+
+    for p, prop in properties.items():
+        if prop == noun:
+            property_code.append(p)
+            break
+
+    if len(property_code)==0:
         for p, prop in properties.items():
-            if prop == noun:
-                property_code.append(p)
-                break
-            else:
-                if type(noun_synonyms) != bool:
-                    for synonym in noun_synonyms.itervalues():
-                        if prop == synonym:
-                            property_code.append(p)
-                            break
+            if type(noun_synonyms) != bool:
+                for synonym in noun_synonyms.itervalues():
+                    if prop == synonym:
+                        property_code.append(p)
+                        break
+
     print(property_code)
 
     if (len(named_entity) != 0):
