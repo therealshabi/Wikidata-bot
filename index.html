@@ -132,6 +132,7 @@
     insertChat("you", "Hey there...", 0);
 
     function UserAction(text) {
+        you.avatar = "https://colineberhardt.github.io/cla-bot/bot.png";
         control = '<li id="loading" style="width:100%;">' +
             '<div class="loader">' +
             '</div>' +
@@ -147,6 +148,10 @@
                 console.log(typeof(response));
                 $("ul").children("#loading").remove();
                 if (response["data"] != "") {
+                    if (response["thumbnail"] != "") {
+                        you.avatar = response["thumbnail"];
+                        console.log("Hello");
+                    }
                     insertChat("you", response["data"], 0);
                 } else {
                     alert("Bot doesn't seem to understand your query, sorry for inconvenience :(");

@@ -50,10 +50,11 @@ def obtain_result(named_entity, query_properties):
         else:
             flag = 1
             sparql = SPARQLWrapper("https://dbpedia.org/sparql")
-            query = """SELECT ?label ?description WHERE
+            query = """SELECT ?label ?description ?thumbnail WHERE
                 { 
                 ?entity rdfs:label ?label .
                 ?entity dbo:abstract ?description .
+                ?entity dbo:thumbnail ?thumbnail .
                 FILTER (STR(?label) = '"""+named_entity[0]+"""' && LANG(?description) = "en") .
                 }
                 LIMIT 1"""
@@ -61,8 +62,8 @@ def obtain_result(named_entity, query_properties):
 
         sparql.setQuery(query)
         sparql.setReturnFormat(JSON)
-        result = []
         result = list()
+        temp = str()
         try:
             results = sparql.query().convert()
             print(results)
@@ -72,6 +73,7 @@ def obtain_result(named_entity, query_properties):
             else:
                 for data in results["results"]["bindings"]:
                     result.append(data["description"]["value"])
+                    temp = data["thumbnail"]["value"]
 
             result = list(set(result))
             response = []
@@ -79,7 +81,10 @@ def obtain_result(named_entity, query_properties):
                 print(i)
                 response.append(u''.join(i).encode('utf-8'))
             print(response)
-            data = {"status": "200", "data": response}
+            if flag==0:
+                data = {"status": "200", "data": response, "thumbnail":""}
+            else:
+                data = {"status": "200", "data": response, "thumbnail":temp}
             result = json.dumps(data)
             print(results)
         except:
