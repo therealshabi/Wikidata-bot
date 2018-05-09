@@ -9,30 +9,34 @@ from flask import jsonify
 
 def obtain_result(named_entity, query_properties):
     property_code = []
-    properties = open('property.json', 'r')
-    properties = json.load(properties)
-    print(type(properties))
+    flag = 0
 
-    noun = query_properties[0]
-    noun_synonyms = vb.synonym(noun, format="dict")
+    if len(query_properties) != 0:
+        properties = open('property.json', 'r')
+        properties = json.load(properties)
+        print(type(properties))
 
-    for p, prop in properties.items():
-        if prop == noun:
-            property_code.append(p)
-            break
+        noun = query_properties[0]
+        noun_synonyms = vb.synonym(noun, format="dict")
 
-    if len(property_code)==0:
         for p, prop in properties.items():
-            if type(noun_synonyms) != bool:
-                for synonym in noun_synonyms.itervalues():
-                    if prop == synonym:
-                        property_code.append(p)
-                        break
+            if prop == noun:
+                property_code.append(p)
+                break
 
-    print(property_code)
+        if len(property_code) == 0:
+            for p, prop in properties.items():
+                if type(noun_synonyms) != bool:
+                    for synonym in noun_synonyms.itervalues():
+                        if prop == synonym:
+                            property_code.append(p)
+                            break
+
+        print(property_code)
 
     if (len(named_entity) != 0):
         if (len(property_code) != 0):
+            flag = 0
             sparql = SPARQLWrapper("https://query.wikidata.org/sparql")
             query = """SELECT ?label ?property WHERE
                         { 
@@ -44,36 +48,45 @@ def obtain_result(named_entity, query_properties):
                         }"""
             print query
         else:
+            flag = 1
             sparql = SPARQLWrapper("https://dbpedia.org/sparql")
             query = """SELECT ?label ?description WHERE
-                        { 
-                        ?entity rdfs:label ?label .
-                        ?entity dbo:abstract ?description .
-                        FILTER (STR(?label) = '""" + named_entity[0] + """') .
-                        }"""
+                { 
+                ?entity rdfs:label ?label .
+                ?entity dbo:abstract ?description .
+                FILTER (STR(?label) = '"""+named_entity[0]+"""' && LANG(?description) = "en") .
+                }
+                LIMIT 1"""
             print query
 
         sparql.setQuery(query)
         sparql.setReturnFormat(JSON)
         result = []
+        result = list()
         try:
             results = sparql.query().convert()
             print(results)
-            for data in results["results"]["bindings"]:
-                result.append(data["property"]["value"])
+            if flag==0:
+                for data in results["results"]["bindings"]:
+                    result.append(data["property"]["value"])
+            else:
+                for data in results["results"]["bindings"]:
+                    result.append(data["description"]["value"])
 
             result = list(set(result))
             response = []
             for i in result:
                 print(i)
-                response.append(str(i))
+                response.append(u''.join(i).encode('utf-8'))
             print(response)
             data = {"status": "200", "data": response}
             result = json.dumps(data)
+            print(results)
         except:
             response = ["Unable to retrieve data"]
             data = {"status": "500", "data": response}
             result = json.dumps(data)
+            raise
     else:
         response = ["Unable to retrieve data"]
         data = {"status": "500", "data": response}
