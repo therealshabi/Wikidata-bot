@@ -38,11 +38,12 @@ def obtain_result(named_entity, query_properties):
         if (len(property_code) != 0):
             flag = 0
             sparql = SPARQLWrapper("https://query.wikidata.org/sparql")
-            query = """SELECT ?label ?property WHERE
+            query = """SELECT ?label ?property ?thumbnail WHERE
                         { 
                         ?entity rdfs:label ?label .
                         ?entity wdt:""" + property_code[0] + """ ?property_id .
                         ?property_id rdfs:label ?property .
+                        OPTIONAL { ?property_id wdt:P18 ?thumbnail .}
                         FILTER (STR(?label) = '""" + named_entity[0] + """') .
                         FILTER (LANG(?property) = "en")
                         }"""
@@ -70,6 +71,8 @@ def obtain_result(named_entity, query_properties):
             if flag==0:
                 for data in results["results"]["bindings"]:
                     result.append(data["property"]["value"])
+                    if "thumbnail" in data and data["thumbnail"]["value"] != "":
+                        temp = data["thumbnail"]["value"]
             else:
                 for data in results["results"]["bindings"]:
                     result.append(data["description"]["value"])
@@ -82,7 +85,7 @@ def obtain_result(named_entity, query_properties):
                 response.append(u''.join(i).encode('utf-8'))
             print(response)
             if flag==0:
-                data = {"status": "200", "data": response, "thumbnail":""}
+                data = {"status": "200", "data": response, "thumbnail":temp}
             else:
                 data = {"status": "200", "data": response, "thumbnail":temp}
             result = json.dumps(data)
