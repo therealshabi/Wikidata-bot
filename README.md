@@ -6,6 +6,11 @@ Currently in working condition, the data is loaded from linked data, hence it ma
 
 Currently in mid development phase, and it needs a lot of improvement
 
+## Demo Images
+
+<img src="/demo-pics/Chat-bot-1.png" alt="Chat Bot 1" width= "360px"/><img src="/demo-pics/Chat-bot-2.png" alt="Chat Bot 2" width= "360px"/>
+
+
 ## Tech Stack Used
 
 1. SPARQLWrapper : SPARQLWrapper is a simple Python wrapper around a SPARQL service to remotelly execute your queries. It helps in creating the query invokation and, possibly, convert the result into a more manageable format.
