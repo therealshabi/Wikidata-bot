@@ -32,4 +32,10 @@ http://flask.pocoo.org/
 
 7. NLTK library : NLTK is a leading platform for building Python programs to work with human language data. It provides easy-to-use interfaces to over 50 corpora and lexical resources such as WordNet, along with a suite of text processing libraries for classification, tokenization, stemming, tagging, parsing, and semantic reasoning, wrappers for industrial-strength NLP libraries.
 https://www.nltk.org/
+
+## Support
+
+The primary purpose of this app is manipulate the data provided to us by the open world linked data, and use semantic web techniques to deliver the same data to the end user, while doing the process, we intend to enhance the already existing technology by adding extra flavors to it, though there are chances that we miss something out, so please if you find some issues with it, well create a new [issue](https://github.com/therealshabi/Wikidata-bot/issues/new) for the same, it is much appreciated. Also, feel free to contribute by pull requests or any other feature requests :)
+
+
  
