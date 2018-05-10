@@ -1,13 +1,17 @@
 import nltk
 
 
-def parts_of_speech(corpus, query_properties):
-    sentences = nltk.sent_tokenize(corpus)
+# pos tagging using NLTK
+def parts_of_speech(query_sentence, query_properties):
+    sentences = nltk.sent_tokenize(query_sentence)
     tokenized = [nltk.word_tokenize(sentence) for sentence in sentences]
     pos_tags = [nltk.pos_tag(sentence) for sentence in tokenized]
     print(pos_tags[0])
+
+    # extracting query properties i.e. common nouns from the query sentence which is tagged as NN by POS tagger
     for name, tag in pos_tags[0]:
         if tag == 'NN':
+            # for handling queries like head-of-government which would be queries as a singular head of government
             name = name.split("-")
             name = " ".join(name)
             query_properties.append(name)

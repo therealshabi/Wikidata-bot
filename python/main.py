@@ -94,6 +94,7 @@ def obtain_result(named_entity, query_properties):
 
         sparql.setQuery(query)
         sparql.setReturnFormat(JSON)
+        global result
         result = list()
         temp = str()
         try:
@@ -113,7 +114,7 @@ def obtain_result(named_entity, query_properties):
                 # parsing for dbpedia
                 for data in results["results"]["bindings"]:
                     result.append(data["description"]["value"])
-                    
+
                     # if the thumbnail do not exist for an entity
                     if "thumbnail" in data and data["thumbnail"]["value"] != "":
                         temp = data["thumbnail"]["value"]
@@ -137,7 +138,6 @@ def obtain_result(named_entity, query_properties):
         except:
             response = ["Unable to retrieve data"]
             data = {"status": "500", "data": response}
-            global result
             result = json.dumps(data)
             raise
     else:
