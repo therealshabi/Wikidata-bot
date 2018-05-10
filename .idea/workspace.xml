@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="cacd2a42-f773-44ac-b16a-a5fe96ad17c3" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/python/main.py" afterPath="$PROJECT_DIR$/python/main.py" />
-      <change beforePath="$PROJECT_DIR$/python/nlp.py" afterPath="$PROJECT_DIR$/python/nlp.py" />
-    </list>
+    <list default="true" id="cacd2a42-f773-44ac-b16a-a5fe96ad17c3" name="Default" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -14,7 +11,7 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="main.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="main.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/python/main.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="1455">
@@ -26,7 +23,7 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="nlp.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="nlp.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/python/nlp.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="-184">
@@ -332,6 +329,14 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/python/nlp.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-184">
+          <caret line="13" column="114" lean-forward="false" selection-start-line="13" selection-start-column="114" selection-end-line="13" selection-end-column="114" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/python/main.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1455">
@@ -339,14 +344,6 @@
           <folding>
             <element signature="e#0#11#0" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/python/nlp.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-184">
-          <caret line="13" column="114" lean-forward="false" selection-start-line="13" selection-start-column="114" selection-end-line="13" selection-end-column="114" />
-          <folding />
         </state>
       </provider>
     </entry>
